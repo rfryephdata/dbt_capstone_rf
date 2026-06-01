@@ -1,0 +1,169 @@
+version: 2
+
+models:
+  - name: stg_classic_models__customers
+    description: customer master records used for sales, account management, and order processing.
+    columns:
+      - name: customer_number
+        description: unique identifier for the customer.
+      - name: customer_name
+        description: full name of the customer account or business.
+      - name: customer_last_name
+        description: last name of the primary customer contact.
+      - name: customer_first_name
+        description: first name of the primary customer contact.
+      - name: phone
+        description: primary phone number for the customer.
+      - name: address_line1
+        description: first line of the customer's street address.
+      - name: address_line2
+        description: second line of the customer's street address.
+      - name: city
+        description: city of the customer's primary address.
+      - name: state
+        description: state or province of the customer's primary address.
+      - name: postal_code
+        description: postal or zip code of the customer's primary address.
+      - name: country
+        description: country of the customer's primary address.
+      - name: sales_rep_employee_number
+        description: identifier of the sales representative assigned to the customer.
+      - name: credit_limit
+        description: maximum amount of credit extended to the customer.
+      - name: _sync_date
+        description: date when the customer record was last synced from the source system.
+
+
+  - name: stg_classic_models__employees
+    description: employee records used for organizational structure, sales coverage, and internal contact details.
+    columns:
+      - name: employee_number
+        description: unique identifier for the employee.
+      - name: last_name
+        description: employee's last name.
+      - name: first_name
+        description: employee's first name.
+      - name: extension
+        description: employee's phone extension.
+      - name: email
+        description: employee's work email address.
+      - name: office_code
+        description: identifier of the office where the employee is based.
+      - name: reports_to
+        description: identifier of the employee's manager.
+      - name: job_title
+        description: employee's job title.
+      - name: _sync_date
+        description: date when the employee record was last synced from the source system.
+
+  - name: stg_classic_models__offices
+    description: office location records used for regional operations and employee assignment.
+    columns:
+      - name: office_code
+        description: unique identifier for the office.
+      - name: city
+        description: city where the office is located.
+      - name: phone
+        description: primary phone number for the office.
+      - name: address_line1
+        description: first line of the office street address.
+      - name: address_line2
+        description: second line of the office street address.
+      - name: state
+        description: state or province where the office is located.
+      - name: country
+        description: country where the office is located.
+      - name: postal_code
+        description: postal or zip code for the office address.
+      - name: territory
+        description: sales territory served by the office.
+      - name: _sync_date
+        description: date when the office record was last synced from the source system.
+
+  - name: stg_classic_models__order_details
+    description: line-item details for products included on each customer order.
+    columns:
+      - name: order_number
+        description: identifier for the order.
+      - name: product_code
+        description: identifier for the product ordered.
+      - name: quantity_ordered
+        description: number of units ordered for the product line item.
+      - name: price_each
+        description: unit selling price charged for the product line item.
+      - name: order_line_number
+        description: line number of the product within the order.
+      - name: _sync_date
+        description: date when the order line record was last synced from the source system.
+
+  - name: stg_classic_models__orders
+    description: customer order records used to track order dates, fulfillment, and status.
+    columns:
+      - name: order_number
+        description: unique identifier for the order.
+      - name: order_date
+        description: date when the order was placed.
+      - name: required_date
+        description: date by which the customer requested the order.
+      - name: shipped_date
+        description: date when the order was shipped.
+      - name: status
+        description: current fulfillment status of the order.
+      - name: comments
+        description: additional notes associated with the order.
+      - name: customer_number
+        description: identifier for the customer who placed the order.
+      - name: _sync_date
+        description: date when the order record was last synced from the source system.
+
+  - name: stg_classic_models__payments
+    description: customer payment records used to track amounts received against accounts.
+    columns:
+      - name: customer_number
+        description: identifier for the customer making the payment.
+      - name: check_number
+        description: payment reference number.
+      - name: payment_date
+        description: date when the payment was received.
+      - name: amount
+        description: amount received from the customer.
+      - name: _sync_date
+        description: date when the payment record was last synced from the source system.
+
+  - name: stg_classic_models__product_lines
+    description: product category records used to group products into merchandising lines.
+    columns:
+      - name: product_line
+        description: name of the product line or category.
+      - name: text_description
+        description: plain text description of the product line.
+      - name: html_description
+        description: formatted description of the product line for web or rich text display.
+      - name: image
+        description: image associated with the product line.
+      - name: _sync_date
+        description: date when the product line record was last synced from the source system.
+
+  - name: stg_classic_models__products
+    description: product catalog records used for merchandising, pricing, and inventory tracking.
+    columns:
+      - name: product_code
+        description: unique identifier for the product.
+      - name: product_name
+        description: name of the product.
+      - name: product_line
+        description: product line or category the product belongs to.
+      - name: product_scale
+        description: scale or size designation of the product model.
+      - name: product_vendor
+        description: vendor or manufacturer supplying the product.
+      - name: product_description
+        description: business description of the product.
+      - name: quantity_in_stock
+        description: number of units currently available in inventory.
+      - name: buy_price
+        description: acquisition cost of the product.
+      - name: msrp
+        description: manufacturer's suggested retail price for the product.
+      - name: _sync_date
+        description: date when the product record was last synced from the source system.
