@@ -1,0 +1,81 @@
+version: 2
+
+models:
+  - name: int_orders__joined
+    description: >
+      Orders joined to order detail line items. Each row represents one
+      product line within an order, enriched with a calculated line total.
+    columns:
+      - name: order_number
+        description: Foreign key to stg_classic_models__orders.
+        tests:
+          - not_null
+      - name: product_code
+        description: Foreign key to stg_classic_models__products.
+        tests:
+          - not_null
+      - name: order_line_number
+        description: Sequence of this line item within the order.
+      - name: quantity_ordered
+        description: Number of units ordered for this product on this order.
+      - name: price_each
+        description: Unit price charged for this product on this order.
+      - name: line_total
+        description: Derived total for this line item (quantity_ordered * price_each).
+
+  - name: int_employees__joined
+    description: >
+      Employees joined to their assigned office, enriching each employee
+      record with office location attributes.
+    columns:
+      - name: employee_number
+        description: Primary key. Unique identifier for each employee.
+        tests:
+          - unique
+          - not_null
+      - name: office_code
+        description: Foreign key to stg_classic_models__offices.
+      - name: reports_to_employee_number
+        description: Self-referencing foreign key to the employee's manager.
+
+  - name: int_customers__joined
+    description: >
+      Customers joined to their assigned sales rep employee (via
+      int_employees__joined), enriching each customer with sales rep
+      and office territory attributes.
+    columns:
+      - name: customer_number
+        description: Primary key. Unique identifier for each customer.
+        tests:
+          - unique
+          - not_null
+      - name: sales_rep_employee_number
+        description: Foreign key to int_employees__joined. Null if no sales rep assigned.
+
+  - name: int_products__joined
+    description: >
+      Products joined to their product line category, enriching each
+      product with product line description.
+    columns:
+      - name: product_code
+        description: Primary key. Unique identifier for each product.
+        tests:
+          - unique
+          - not_null
+      - name: product_line
+        description: Foreign key to stg_classic_models__productlines.
+
+  - name: int_payments__joined
+    description: >
+      Payments joined to their associated customer, enriching each
+      payment record with customer name and country.
+    columns:
+      - name: check_number
+        description: Primary key. Unique identifier for each payment.
+        tests:
+          - unique
+          - not_null
+      - name: customer_number
+        description: Foreign key to stg_classic_models__customers.
+        tests:
+          - not_null
