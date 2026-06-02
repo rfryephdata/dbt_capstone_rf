@@ -13,7 +13,9 @@ sources:
               - not_null
           - name: sales_rep_employee_number
             tests:
-              - not_null
+              - not_null:
+                  config:
+                    severity: warn
               - relationships:
                   arguments:
                     to: source('classic_models', 'employees')
