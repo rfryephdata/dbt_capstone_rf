@@ -13,6 +13,11 @@ models:
           - not_null
       - name: sales_rep_employee_number
         description: Foreign key to dim_employees. Null if no sales rep is assigned.
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_employees')
+                field: employee_number
       - name: customer_name
         description: Name of the customer company or individual.
       - name: country
@@ -32,6 +37,12 @@ models:
           - not_null
       - name: office_code
         description: Foreign key to dim_offices.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_offices')
+                field: office_code
       - name: reports_to_employee_number
         description: Self-referencing foreign key to the employee's manager.
       - name: job_title
@@ -49,6 +60,8 @@ models:
           - not_null
       - name: product_line
         description: Foreign key to the product line category.
+        tests:
+          - not_null
       - name: buy_price
         description: Wholesale cost of the product.
       - name: msrp
@@ -71,6 +84,12 @@ models:
       Orders fact table at the order line item grain. Each row represents
       one product within one order, with measures for quantity, unit price,
       and line total. Joins to dim_customers, dim_products.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - order_number
+              - order_line_number
     columns:
       - name: order_number
         description: Foreign key to the order header. Part of the natural key.
@@ -84,22 +103,44 @@ models:
         description: Foreign key to dim_products.
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_code
       - name: customer_number
         description: Foreign key to dim_customers.
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_number
       - name: order_date
-        description: Date the order was placed.
+        description: Foreign key to dim_date.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
       - name: shipped_date
         description: Date the order was shipped. Null if not yet shipped.
       - name: status
         description: Current fulfillment status of the order.
+        tests:
+          - not_null
       - name: quantity_ordered
         description: Number of units ordered for this product on this line.
+        tests:
+          - not_null
       - name: price_each
         description: Unit price charged for this product on this order.
+        tests:
+          - not_null
       - name: line_total
         description: Derived total for this line item (quantity_ordered * price_each).
+        tests:
+          - not_null
 
   - name: fct_payments
     description: >
@@ -116,10 +157,22 @@ models:
         description: Foreign key to dim_customers.
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_number
       - name: payment_date
-        description: Date the payment was made.
+        description: Foreign key to dim_date.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
       - name: amount
         description: Total dollar amount of the payment.
+        tests:
+          - not_null
   
   - name: dim_date
     description: >
@@ -134,23 +187,49 @@ models:
           - not_null
       - name: day_of_week_number
         description: Day of the week as a number (1=Sunday through 7=Saturday in Snowflake).
+        tests:
+          - not_null
       - name: day_of_week_name
         description: Full name of the day of the week (e.g. Monday).
+        tests:
+          - not_null
       - name: month_number
         description: Month as a number (1–12).
+        tests:
+          - not_null
+      - name: day_of_month
+        description: Day of the month as a number.
+        tests:
+          - not_null
       - name: month_name
         description: Full name of the month (e.g. January).
+        tests:
+          - not_null
       - name: quarter_number
         description: Quarter as a number (1–4).
+        tests:
+          - not_null
       - name: quarter_name
         description: Quarter label (e.g. Q1).
+        tests:
+          - not_null
       - name: year_number
         description: Four-digit calendar year.
+        tests:
+          - not_null
       - name: is_weekend
         description: Boolean flag, true if the date falls on a Saturday or Sunday.
+        tests:
+          - not_null
       - name: first_day_of_month
         description: The first calendar day of the month this date belongs to.
+        tests:
+          - not_null
       - name: last_day_of_month
         description: The last calendar day of the month this date belongs to.
+        tests:
+          - not_null
       - name: first_day_of_quarter
         description: The first calendar day of the quarter this date belongs to.
+        tests:
+          - not_null

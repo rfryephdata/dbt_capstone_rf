@@ -10,18 +10,34 @@ models:
         description: Foreign key to stg_classic_models__orders.
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__orders')
+                field: order_number
       - name: product_code
         description: Foreign key to stg_classic_models__products.
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__products')
+                field: product_code
       - name: order_line_number
         description: Sequence of this line item within the order.
+        tests:
+          - not_null
       - name: quantity_ordered
         description: Number of units ordered for this product on this order.
+        tests:
+          - not_null
       - name: price_each
         description: Unit price charged for this product on this order.
+        tests:
+          - not_null
       - name: line_total
         description: Derived total for this line item (quantity_ordered * price_each).
+        tests:
+          - not_null
 
   - name: int_employees__joined
     description: >
@@ -35,6 +51,12 @@ models:
           - not_null
       - name: office_code
         description: Foreign key to stg_classic_models__offices.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__offices')
+                field: office_code
       - name: reports_to_employee_number
         description: Self-referencing foreign key to the employee's manager.
 
@@ -51,6 +73,11 @@ models:
           - not_null
       - name: sales_rep_employee_number
         description: Foreign key to int_employees__joined. Null if no sales rep assigned.
+        tests:
+          - relationships:
+              arguments:
+                to: ref('int_employees__joined')
+                field: employee_number
 
   - name: int_products__joined
     description: >
@@ -64,6 +91,12 @@ models:
           - not_null
       - name: product_line
         description: Foreign key to stg_classic_models__productlines.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__productlines')
+                field: product_line
 
   - name: int_payments__joined
     description: >
@@ -79,3 +112,7 @@ models:
         description: Foreign key to stg_classic_models__customers.
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__customers')
+                field: customer_number

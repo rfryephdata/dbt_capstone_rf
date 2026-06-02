@@ -57,7 +57,8 @@ vars:
     documentation_coverage_target: 75
     test_coverage_target: 75
     # set constraints tests as primary key test
-    primary_key_test_macros: [["dbt.test_unique", "dbt.test_not_null"],["dbt_constraints.test_primary_key"]]
+    # primary_key_test_macros: [["dbt.test_unique", "dbt.test_not_null"],["dbt_constraints.test_primary_key"]]
+    primary_key_test_macros: [["dbt.test_unique", "dbt.test_not_null"]]
     # set model types
     marts_folder_name: 'marts'
     marts_prefixes: ['dim_', 'fct_']

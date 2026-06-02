@@ -5,7 +5,10 @@ models:
     description: customer master records used for sales, account management, and order processing.
     columns:
       - name: customer_number
-        description: unique identifier for the customer.
+        description: Primary key. Unique identifier for each customer.
+        tests:
+          - unique
+          - not_null
       - name: customer_name
         description: full name of the customer account or business.
       - name: customer_last_name
@@ -27,7 +30,12 @@ models:
       - name: country
         description: country of the customer's primary address.
       - name: sales_rep_employee_number
-        description: identifier of the sales representative assigned to the customer.
+        description: Foreign key to stg_classic_models__employees.
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__employees')
+                field: employee_number
       - name: credit_limit
         description: maximum amount of credit extended to the customer.
       - name: _sync_date
@@ -38,7 +46,10 @@ models:
     description: employee records used for organizational structure, sales coverage, and internal contact details.
     columns:
       - name: employee_number
-        description: unique identifier for the employee.
+        description: Primary key. Unique identifier for each employee.
+        tests:
+          - unique
+          - not_null
       - name: last_name
         description: employee's last name.
       - name: first_name
@@ -48,7 +59,13 @@ models:
       - name: email
         description: employee's work email address.
       - name: office_code
-        description: identifier of the office where the employee is based.
+        description: Foreign key to stg_classic_models__offices.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__offices')
+                field: office_code
       - name: reports_to
         description: identifier of the employee's manager.
       - name: job_title
@@ -60,7 +77,10 @@ models:
     description: office location records used for regional operations and employee assignment.
     columns:
       - name: office_code
-        description: unique identifier for the office.
+        description: Primary key. Unique identifier for each office.
+        tests:
+          - unique
+          - not_null
       - name: city
         description: city where the office is located.
       - name: phone
@@ -84,9 +104,21 @@ models:
     description: line-item details for products included on each customer order.
     columns:
       - name: order_number
-        description: identifier for the order.
+        description: Foreign key to stg_classic_models__orders.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__orders')
+                field: order_number
       - name: product_code
-        description: identifier for the product ordered.
+        description: Foreign key to stg_classic_models__products.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__products')
+                field: product_code
       - name: quantity_ordered
         description: number of units ordered for the product line item.
       - name: price_each
@@ -100,7 +132,10 @@ models:
     description: customer order records used to track order dates, fulfillment, and status.
     columns:
       - name: order_number
-        description: unique identifier for the order.
+        description: Primary key. Unique identifier for each order.
+        tests:
+          - unique
+          - not_null
       - name: order_date
         description: date when the order was placed.
       - name: required_date
@@ -112,17 +147,32 @@ models:
       - name: comments
         description: additional notes associated with the order.
       - name: customer_number
-        description: identifier for the customer who placed the order.
+        description: Foreign key to stg_classic_models__customers.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__customers')
+                field: customer_number
       - name: _sync_date
         description: date when the order record was last synced from the source system.
 
   - name: stg_classic_models__payments
     description: customer payment records used to track amounts received against accounts.
     columns:
-      - name: customer_number
-        description: identifier for the customer making the payment.
       - name: check_number
-        description: payment reference number.
+        description: Primary key. Unique identifier for each payment.
+        tests:
+          - unique
+          - not_null
+      - name: customer_number
+        description: Foreign key to stg_classic_models__customers.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__customers')
+                field: customer_number
       - name: payment_date
         description: date when the payment was received.
       - name: amount
@@ -134,7 +184,10 @@ models:
     description: product category records used to group products into merchandising lines.
     columns:
       - name: product_line
-        description: name of the product line or category.
+        description: Primary key. Name of the product line category.
+        tests:
+          - unique
+          - not_null
       - name: text_description
         description: plain text description of the product line.
       - name: html_description
@@ -148,11 +201,20 @@ models:
     description: product catalog records used for merchandising, pricing, and inventory tracking.
     columns:
       - name: product_code
-        description: unique identifier for the product.
+        description: Primary key. Unique identifier for each product.
+        tests:
+          - unique
+          - not_null
+      - name: product_line
+        description: Foreign key to stg_classic_models__productlines.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__productlines')
+                field: product_line
       - name: product_name
         description: name of the product.
-      - name: product_line
-        description: product line or category the product belongs to.
       - name: product_scale
         description: scale or size designation of the product model.
       - name: product_vendor
