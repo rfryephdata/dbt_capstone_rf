@@ -10,7 +10,7 @@ final AS (
         email,
         extension,
         job_title,
-        reports_to,
+        reports_to_employee_number,
         office_code,
         office_city,
         office_state,
