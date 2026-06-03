@@ -1,0 +1,429 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: >
+      Customer dimension containing one row per customer, enriched with
+      their assigned sales representative and office territory attributes.
+    config:
+      access: public
+      contract:
+        enforced: true
+    columns:
+      - name: customer_number
+        description: Primary key. Unique identifier for each customer.
+        data_type: number
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+        description: Name of the customer company or individual.
+        data_type: varchar
+      - name: customer_first_name
+        description: First name of the primary customer contact.
+        data_type: varchar
+      - name: customer_last_name
+        description: Last name of the primary customer contact.
+        data_type: varchar
+      - name: phone
+        description: Primary phone number for the customer.
+        data_type: varchar
+      - name: address_line1
+        description: First line of the customer's street address.
+        data_type: varchar
+      - name: address_line2
+        description: Second line of the customer's street address.
+        data_type: varchar
+      - name: city
+        description: City of the customer's primary address.
+        data_type: varchar
+      - name: state
+        description: State or province of the customer's primary address.
+        data_type: varchar
+      - name: postal_code
+        description: Postal or zip code of the customer's primary address.
+        data_type: varchar
+      - name: country
+        description: Country where the customer is located.
+        data_type: varchar
+      - name: credit_limit
+        description: Maximum credit extended to this customer.
+        data_type: float
+      - name: sales_rep_employee_number
+        description: Foreign key to dim_employees. Null if no sales rep is assigned.
+        data_type: number
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_employees')
+                field: employee_number
+      - name: sales_rep_first_name
+        description: First name of the assigned sales representative.
+        data_type: varchar
+      - name: sales_rep_last_name
+        description: Last name of the assigned sales representative.
+        data_type: varchar
+      - name: sales_rep_office_city
+        description: City of the sales rep's office.
+        data_type: varchar
+      - name: sales_rep_office_country
+        description: Country of the sales rep's office.
+        data_type: varchar
+      - name: sales_rep_territory
+        description: Sales territory of the sales rep's office.
+        data_type: varchar
+
+  - name: dim_employees
+    description: >
+      Employee dimension containing one row per employee, enriched with
+      their assigned office location and territory.
+    config:
+      access: public
+      contract:
+        enforced: true
+    columns:
+      - name: employee_number
+        description: Primary key. Unique identifier for each employee.
+        data_type: number
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: Employee's first name.
+        data_type: varchar
+      - name: last_name
+        description: Employee's last name.
+        data_type: varchar
+      - name: email
+        description: Employee's work email address.
+        data_type: varchar
+      - name: extension
+        description: Employee's phone extension.
+        data_type: varchar
+      - name: job_title
+        description: The employee's role title.
+        data_type: varchar
+      - name: reports_to_employee_number
+        description: Self-referencing foreign key to the employee's manager.
+        data_type: number
+      - name: office_code
+        description: Foreign key to dim_offices.
+        data_type: varchar
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_offices')
+                field: office_code
+      - name: office_city
+        description: City of the employee's assigned office.
+        data_type: varchar
+      - name: office_state
+        description: State of the employee's assigned office.
+        data_type: varchar
+      - name: office_country
+        description: Country of the employee's assigned office.
+        data_type: varchar
+      - name: office_territory
+        description: Sales territory of the employee's assigned office.
+        data_type: varchar
+
+  - name: dim_products
+    description: >
+      Product dimension containing one row per product, enriched with
+      product line category and description.
+    config:
+      access: public
+      contract:
+        enforced: true
+    columns:
+      - name: product_code
+        description: Primary key. Unique identifier for each product.
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Name of the product.
+        data_type: varchar
+      - name: product_line
+        description: Foreign key to the product line category.
+        data_type: varchar
+        tests:
+          - not_null
+      - name: product_line_description
+        description: Text description of the product line.
+        data_type: varchar
+      - name: product_scale
+        description: Scale or size designation of the product model.
+        data_type: varchar
+      - name: product_vendor
+        description: Vendor or manufacturer supplying the product.
+        data_type: varchar
+      - name: product_description
+        description: Business description of the product.
+        data_type: varchar
+      - name: quantity_in_stock
+        description: Number of units currently available in inventory.
+        data_type: number
+      - name: buy_price
+        description: Wholesale cost of the product.
+        data_type: float
+      - name: msrp
+        description: Manufacturer suggested retail price.
+        data_type: float
+
+  - name: dim_offices
+    description: >
+      Office dimension containing one row per office location.
+    config:
+      access: public
+      contract:
+        enforced: true
+    columns:
+      - name: office_code
+        description: Primary key. Unique identifier for each office.
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+      - name: city
+        description: City where the office is located.
+        data_type: varchar
+      - name: state
+        description: State or province where the office is located.
+        data_type: varchar
+      - name: country
+        description: Country where the office is located.
+        data_type: varchar
+      - name: territory
+        description: Sales territory the office belongs to.
+        data_type: varchar
+      - name: phone
+        description: Primary phone number for the office.
+        data_type: varchar
+      - name: address_line1
+        description: First line of the office street address.
+        data_type: varchar
+      - name: address_line2
+        description: Second line of the office street address.
+        data_type: varchar
+      - name: postal_code
+        description: Postal or zip code for the office address.
+        data_type: varchar
+
+  - name: fct_orders
+    description: >
+      Orders fact table at the order line item grain. Each row represents
+      one product within one order, with measures for quantity, unit price,
+      and line total. Joins to dim_customers, dim_products.
+    config:
+      access: public
+      contract:
+        enforced: true
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - order_number
+              - order_line_number
+    columns:
+      - name: order_number
+        description: Foreign key to the order header. Part of the natural key.
+        data_type: number
+        tests:
+          - not_null
+      - name: order_line_number
+        description: Sequence of this line item within the order. Part of the natural key.
+        data_type: number
+        tests:
+          - not_null
+      - name: product_code
+        description: Foreign key to dim_products.
+        data_type: varchar
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_code
+      - name: customer_number
+        description: Foreign key to dim_customers.
+        data_type: number
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_number
+      - name: order_date
+        description: Foreign key to dim_date.
+        data_type: date
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: required_date
+        description: Date by which the customer requested the order.
+        data_type: date
+      - name: shipped_date
+        description: Date the order was shipped. Null if not yet shipped.
+        data_type: date
+      - name: status
+        description: Current fulfillment status of the order.
+        data_type: varchar
+        tests:
+          - not_null
+      - name: comments
+        description: Additional notes associated with the order.
+        data_type: varchar
+      - name: quantity_ordered
+        description: Number of units ordered for this product on this line.
+        data_type: number
+        tests:
+          - not_null
+      - name: price_each
+        description: Unit price charged for this product on this order.
+        data_type: float
+        tests:
+          - not_null
+      - name: line_total
+        description: Derived total for this line item (quantity_ordered * price_each).
+        data_type: float
+        tests:
+          - not_null
+
+  - name: fct_payments
+    description: >
+      Payments fact table at the payment grain. Each row represents one
+      customer payment, with the payment amount as the primary measure.
+      Joins to dim_customers.
+    config:
+      access: public
+      contract:
+        enforced: true
+    columns:
+      - name: check_number
+        description: Primary key. Unique identifier for each payment.
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+      - name: customer_number
+        description: Foreign key to dim_customers.
+        data_type: number
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_number
+      - name: payment_date
+        description: Foreign key to dim_date.
+        data_type: date
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: amount
+        description: Total dollar amount of the payment.
+        data_type: float
+        tests:
+          - not_null
+
+  - name: dim_date
+    description: >
+      Date dimension at daily grain covering 2003-01-01 through 2006-12-31.
+      Provides calendar attributes for joining to order_date, shipped_date,
+      required_date, and payment_date in the fact tables.
+    config:
+      access: public
+      contract:
+        enforced: true
+    columns:
+      - name: date_key
+        description: Primary key. Truncated date value, one row per calendar day.
+        data_type: date
+        tests:
+          - unique
+          - not_null
+      - name: full_date
+        description: Full date value.
+        data_type: date
+      - name: day_of_week_number
+        description: Day of the week as a number (1=Sunday through 7=Saturday in Snowflake).
+        data_type: number
+        tests:
+          - not_null
+      - name: day_of_week_name
+        description: Full name of the day of the week (e.g. Monday).
+        data_type: varchar
+        tests:
+          - not_null
+      - name: day_of_month
+        description: Day of the month as a number.
+        data_type: number
+        tests:
+          - not_null
+      - name: day_of_year
+        description: Day of the year as a number (1–366).
+        data_type: number
+      - name: week_of_year
+        description: Week of the year as a number.
+        data_type: number
+      - name: month_number
+        description: Month as a number (1–12).
+        data_type: number
+        tests:
+          - not_null
+      - name: month_name
+        description: Full name of the month (e.g. January).
+        data_type: varchar
+        tests:
+          - not_null
+      - name: quarter_number
+        description: Quarter as a number (1–4).
+        data_type: number
+        tests:
+          - not_null
+      - name: quarter_name
+        description: Quarter label (e.g. Q1).
+        data_type: varchar
+        tests:
+          - not_null
+      - name: year_number
+        description: Four-digit calendar year.
+        data_type: number
+        tests:
+          - not_null
+      - name: is_weekend
+        description: Boolean flag, true if the date falls on a Saturday or Sunday.
+        data_type: boolean
+        tests:
+          - not_null
+      - name: first_day_of_week
+        description: The first calendar day of the week this date belongs to.
+        data_type: date
+      - name: first_day_of_month
+        description: The first calendar day of the month this date belongs to.
+        data_type: date
+        tests:
+          - not_null
+      - name: last_day_of_month
+        description: The last calendar day of the month this date belongs to.
+        data_type: date
+        tests:
+          - not_null
+      - name: first_day_of_quarter
+        description: The first calendar day of the quarter this date belongs to.
+        data_type: date
+        tests:
+          - not_null
+      - name: first_day_of_year
+        description: The first calendar day of the year this date belongs to.
+        data_type: date
+        

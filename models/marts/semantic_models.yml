@@ -1,0 +1,108 @@
+version: 2
+
+semantic_models:
+  - name: orders
+    description: Order line item fact table, grain is one row per product per order.
+    model: ref('fct_orders')
+
+    entities:
+      - name: order
+        type: primary
+        expr: order_number
+      - name: customer
+        type: foreign
+        expr: customer_number
+      - name: product
+        type: foreign
+        expr: product_code
+
+    dimensions:
+      - name: order_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: status
+        type: categorical
+
+    measures:
+      - name: quantity_ordered
+        description: Total units ordered.
+        agg: sum
+        expr: quantity_ordered
+      - name: revenue
+        description: Total revenue from order line items.
+        agg: sum
+        expr: line_total
+      - name: order_count
+        description: Count of distinct orders placed.
+        agg: count_distinct
+        expr: order_number
+      - name: order_line_count
+        description: Count of order line items.
+        agg: count
+        expr: order_line_number
+      - name: average_order_value
+        description: Average line total per order line.
+        agg: average
+        expr: line_total
+
+  - name: payments
+    description: Payment fact table, grain is one row per payment.
+    model: ref('fct_payments')
+
+    entities:
+      - name: payment
+        type: primary
+        expr: check_number
+      - name: customer
+        type: foreign
+        expr: customer_number
+
+    dimensions:
+      - name: payment_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: customer_country
+        type: categorical
+
+    measures:
+      - name: payment_amount
+        description: Total payment amount received.
+        agg: sum
+        expr: amount
+      - name: payment_count
+        description: Count of payments received.
+        agg: count
+        expr: check_number
+      - name: average_payment_amount
+        description: Average payment amount.
+        agg: average
+        expr: amount
+
+  - name: customers
+    description: Customer dimension, grain is one row per customer.
+    model: ref('dim_customers')
+
+    entities:
+      - name: customer
+        type: primary
+        expr: customer_number
+
+    dimensions:
+      - name: customer_name
+        type: categorical
+      - name: country
+        type: categorical
+      - name: sales_rep_territory
+        type: categorical
+
+    measures:
+      - name: customer_count
+        description: Count of distinct customers.
+        agg: count_distinct
+        expr: customer_number
+      - name: total_credit_limit
+        description: Sum of credit limits across customers.
+        agg: sum
+        expr: credit_limit

@@ -6,10 +6,124 @@ sources:
     schema: classic_models
     tables:
       - name: customers
+        columns:
+          - name: customer_number
+            tests:
+              - unique
+              - not_null
+          - name: sales_rep_employee_number
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+              - relationships:
+                  arguments:
+                    to: source('classic_models', 'employees')
+                    field: employee_number
+
       - name: employees
+        columns:
+          - name: employee_number
+            tests:
+              - unique
+              - not_null
+          - name: office_code
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('classic_models', 'offices')
+                    field: office_code
+
       - name: offices
-      - name: orders
+        columns:
+          - name: office_code
+            tests:
+              - unique
+              - not_null
+          - name: address_line2
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+          - name: state
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+
       - name: order_details
+        columns:
+          - name: order_number
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('classic_models', 'orders')
+                    field: order_number
+          - name: product_code
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('classic_models', 'products')
+                    field: product_code
+
+      - name: orders
+        columns:
+          - name: order_number
+            tests:
+              - unique
+              - not_null
+          - name: customer_number
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('classic_models', 'customers')
+                    field: customer_number
+
       - name: payments
-      - name: products
+        columns:
+          - name: check_number
+            tests:
+              - unique
+              - not_null
+          - name: customer_number
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('classic_models', 'customers')
+                    field: customer_number
+
       - name: product_lines
+        columns:
+          - name: product_line
+            tests:
+              - unique
+              - not_null
+          - name: html_description
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+          - name: image
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+
+      - name: products
+        columns:
+          - name: product_code
+            tests:
+              - unique
+              - not_null
+          - name: product_line
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('classic_models', 'product_lines')
+                    field: product_line
