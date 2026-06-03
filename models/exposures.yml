@@ -1,0 +1,27 @@
+version: 2
+
+exposures:
+  - name: classic_models_dashboard
+    label: Classic Models Dashboard
+    type: dashboard
+    maturity: medium
+    url: https://cloud.getdbt.com
+
+    description: >
+      Executive dashboard surfacing Classic Models sales performance,
+      customer analytics, and payment tracking. Built on the Classic Models
+      dimensional model including order line item facts, payment facts,
+      and associated customer, product, employee, office, and date dimensions.
+
+    depends_on:
+      - ref('fct_orders')
+      - ref('fct_payments')
+      - ref('dim_customers')
+      - ref('dim_products')
+      - ref('dim_employees')
+      - ref('dim_offices')
+      - ref('dim_date')
+
+    owner:
+      name: Rob Frye
+      email: rfrye@phdata.io
