@@ -206,12 +206,12 @@ models:
           - unique
           - not_null
       - name: product_line
-        description: Foreign key to stg_classic_models__productlines.
+        description: Foreign key to stg_classic_models__product_lines.
         tests:
           - not_null
           - relationships:
               arguments:
-                to: ref('stg_classic_models__productlines')
+                to: ref('stg_classic_models__product_lines')
                 field: product_line
       - name: product_name
         description: name of the product.

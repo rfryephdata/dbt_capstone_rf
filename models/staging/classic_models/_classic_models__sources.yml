@@ -41,6 +41,16 @@ sources:
             tests:
               - unique
               - not_null
+          - name: address_line2
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+          - name: state
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
 
       - name: order_details
         columns:
@@ -93,6 +103,16 @@ sources:
             tests:
               - unique
               - not_null
+          - name: html_description
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+          - name: image
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
 
       - name: products
         columns:
