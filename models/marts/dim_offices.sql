@@ -10,8 +10,8 @@ final AS (
         country,
         territory,
         phone,
-        address_line_1,
-        address_line_2,
+        address_line1,
+        address_line2,
         postal_code
     FROM offices
 )
