@@ -5,6 +5,8 @@ models:
     description: >
       Orders joined to order detail line items. Each row represents one
       product line within an order, enriched with a calculated line total.
+    config:
+      access: private
     columns:
       - name: order_number
         description: Foreign key to stg_classic_models__orders.
@@ -43,6 +45,8 @@ models:
     description: >
       Employees joined to their assigned office, enriching each employee
       record with office location attributes.
+    config:
+      access: private
     columns:
       - name: employee_number
         description: Primary key. Unique identifier for each employee.
@@ -65,6 +69,8 @@ models:
       Customers joined to their assigned sales rep employee (via
       int_employees__joined), enriching each customer with sales rep
       and office territory attributes.
+    config:
+      access: private
     columns:
       - name: customer_number
         description: Primary key. Unique identifier for each customer.
@@ -83,6 +89,8 @@ models:
     description: >
       Products joined to their product line category, enriching each
       product with product line description.
+    config:
+      access: private
     columns:
       - name: product_code
         description: Primary key. Unique identifier for each product.
@@ -102,6 +110,8 @@ models:
     description: >
       Payments joined to their associated customer, enriching each
       payment record with customer name and country.
+    config:
+      access: private
     columns:
       - name: check_number
         description: Primary key. Unique identifier for each payment.

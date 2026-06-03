@@ -1,0 +1,93 @@
+version: 2
+
+metrics:
+  - name: total_revenue
+    label: Total Revenue
+    description: Sum of all order line item totals across all orders.
+    type: simple
+    type_params:
+      measure:
+        name: revenue
+        fill_nulls_with: 0
+
+  - name: total_orders
+    label: Total Orders
+    description: Count of distinct orders placed.
+    type: simple
+    type_params:
+      measure:
+        name: order_count
+        fill_nulls_with: 0
+
+  - name: total_units_sold
+    label: Total Units Sold
+    description: Sum of all units ordered across all order line items.
+    type: simple
+    type_params:
+      measure:
+        name: quantity_ordered
+        fill_nulls_with: 0
+
+  - name: average_order_value
+    label: Average Order Value
+    description: Average revenue per order line item.
+    type: simple
+    type_params:
+      measure:
+        name: average_order_value
+        fill_nulls_with: 0
+
+  - name: total_payments_received
+    label: Total Payments Received
+    description: Sum of all payment amounts received from customers.
+    type: simple
+    type_params:
+      measure:
+        name: payment_amount
+        fill_nulls_with: 0
+
+  - name: total_payment_count
+    label: Total Payment Count
+    description: Count of all payments received.
+    type: simple
+    type_params:
+      measure:
+        name: payment_count
+        fill_nulls_with: 0
+
+  - name: average_payment_amount
+    label: Average Payment Amount
+    description: Average amount per payment received.
+    type: simple
+    type_params:
+      measure:
+        name: average_payment_amount
+        fill_nulls_with: 0
+
+  - name: total_customers
+    label: Total Customers
+    description: Count of distinct customers.
+    type: simple
+    type_params:
+      measure:
+        name: customer_count
+        fill_nulls_with: 0
+
+  - name: total_credit_limit
+    label: Total Credit Limit
+    description: Sum of credit limits extended across all customers.
+    type: simple
+    type_params:
+      measure:
+        name: total_credit_limit
+        fill_nulls_with: 0
+
+  - name: revenue_per_customer
+    label: Revenue Per Customer
+    description: Average revenue generated per customer.
+    type: derived
+    type_params:
+      expr: total_revenue / total_customers
+      metrics:
+        - name: total_revenue
+        - name: total_customers

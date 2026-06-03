@@ -3,6 +3,8 @@ version: 2
 models:
   - name: stg_classic_models__customers
     description: customer master records used for sales, account management, and order processing.
+    config:
+      access: private
     columns:
       - name: customer_number
         description: Primary key. Unique identifier for each customer.
@@ -44,6 +46,8 @@ models:
 
   - name: stg_classic_models__employees
     description: employee records used for organizational structure, sales coverage, and internal contact details.
+    config:
+      access: private
     columns:
       - name: employee_number
         description: Primary key. Unique identifier for each employee.
@@ -75,6 +79,8 @@ models:
 
   - name: stg_classic_models__offices
     description: office location records used for regional operations and employee assignment.
+    config:
+      access: private
     columns:
       - name: office_code
         description: Primary key. Unique identifier for each office.
@@ -102,6 +108,8 @@ models:
 
   - name: stg_classic_models__order_details
     description: line-item details for products included on each customer order.
+    config:
+      access: private
     columns:
       - name: order_number
         description: Foreign key to stg_classic_models__orders.
@@ -130,6 +138,8 @@ models:
 
   - name: stg_classic_models__orders
     description: customer order records used to track order dates, fulfillment, and status.
+    config:
+      access: private
     columns:
       - name: order_number
         description: Primary key. Unique identifier for each order.
@@ -159,6 +169,8 @@ models:
 
   - name: stg_classic_models__payments
     description: customer payment records used to track amounts received against accounts.
+    config:
+      access: private
     columns:
       - name: check_number
         description: Primary key. Unique identifier for each payment.
@@ -182,6 +194,8 @@ models:
 
   - name: stg_classic_models__product_lines
     description: product category records used to group products into merchandising lines.
+    config:
+      access: private
     columns:
       - name: product_line
         description: Primary key. Name of the product line category.
@@ -199,6 +213,8 @@ models:
 
   - name: stg_classic_models__products
     description: product catalog records used for merchandising, pricing, and inventory tracking.
+    config:
+      access: private
     columns:
       - name: product_code
         description: Primary key. Unique identifier for each product.
