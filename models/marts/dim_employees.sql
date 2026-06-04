@@ -15,7 +15,8 @@ final AS (
         office_city,
         office_state,
         office_country,
-        office_territory
+        office_territory,
+        null AS tshirt
     FROM employees
 )
 
